@@ -1,23 +1,40 @@
 import * as express from 'express';
 import { personaSchema } from './../schemas/persona';
 import { resolve } from 'path';
+import {getMenores} from './../controllers/personaCtrl';
 
 const router = express.Router();
 
-router.get('/persona', (req, res, next) => {
-  console.log('Viene del get');
-  console.log('entra a persona');
-  personaSchema.find((err, persona) =>{
-    if(err) return;
-    console.log('pepe: ', persona);
-    res.send(persona);
+router.get('/persona', async (req, res, next) => {
+  //console.log('Viene del get');
+  //console.log('entra a persona');
+  // personaSchema.find((err, persona) =>{
+  //   if(err) return;
+  //   console.log('pepe: ', persona);
+  //   res.send(persona);
   // })
-    // personaSchema.find(function(err, persona) {
-        // if (err) return;
 
+    let personas = await personaSchema.find();
+      try{
+        let menores = await getMenores(personas);
+        res.send(menores)
+      }catch(err){
+        throw err;
+      }
+      
+    //  personaSchema.find(function(err, personas) {
+    //    if (err) return;
+
+    //    getMayores(personas).then (data =>{
+    //       res.send(data);
+    //    })
+    //    .catch((err) => {
+    //       console.log('Error: ', err);
+    //    });
         // res.send(persona);
-
-    // });
+     
+      });
+     
 
     // getPersona()
     // .then((persona) => {
@@ -34,11 +51,14 @@ router.get('/persona', (req, res, next) => {
     // })
     // .catch(err => {
     //   console.log('Error: ', err);
-    });
-});
+  
+
+
+
+
 
 //GET PERSONA
-function getPersona(){
+ function getPersona(){
   return new Promise ((resolve, reject) => {
     let persona = personaSchema.find({ nombre : 'Leo'}).exec();
     if (persona) {
@@ -51,8 +71,8 @@ function getPersona(){
 };
 
 //POST PERSONA
-router.post('/persona', (req, res) => {
-  console.log('Viene persona POST: ', req.body);
+router.post('/persona' , async (req, res) => {
+  //console.log('Viene persona POST: ', req.body);
   const persona = new personaSchema(req.body);
   persona.save(function(err, persona){
     if (err) {
@@ -63,7 +83,7 @@ router.post('/persona', (req, res) => {
 });
 
 //PUT PERSONA
-router.put('/persona/:_id', (req, res, next) => {
+router.put('/persona/:_id', async (req, res, next) => {
 
   //console.log('Viene del PUT: ', req.body);
   personaSchema.findByIdAndUpdate(req.params._id, req.body, { new : true}, (err, persona) => {
@@ -76,8 +96,8 @@ router.put('/persona/:_id', (req, res, next) => {
 });
 
 //DELETE PERSONA
-router.delete('/persona/:_id', (req, res, next) => {
-  console.log('Viene del DELETE');
+router.delete('/persona/:_id', async (req, res, next) => {
+  //console.log('Viene del DELETE');
   personaSchema.findByIdAndRemove(req.params._id, (err, persona) => {
     if (err) {
       console.log('Error: ', err);

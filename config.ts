@@ -1,10 +1,17 @@
-
-//habilita o desabilita modulos
-export const modules ={
-    personas:{
-        active: true,
-        path: './modules/personas/routes',
-        route: '/modules/personas',
-        
-    }
+export const modules = {
+	auth: {
+		active: true,
+		path: './modules/auth/routes',
+		route: '/modules/auth'
+	},
+	personas: {
+		active: true,
+		path: './modules/personas/routes',
+		route: '/modules/personas'
+	},
+	cursos: {
+		active: true,
+		path: './modules/cursos/routes',
+		route: '/modules/cursos'
+	}
 };
