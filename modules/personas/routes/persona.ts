@@ -8,19 +8,21 @@ const router = express.Router();
 router.get('/persona', async (req, res, next) => {
   //console.log('Viene del get');
   //console.log('entra a persona');
-  // personaSchema.find((err, persona) =>{
-  //   if(err) return;
+   personaSchema.find(function(err, persona){
+     if(err){
+      return err;
+     } 
   //   console.log('pepe: ', persona);
-  //   res.send(persona);
-  // })
+     res.send(persona);
+   })
 
-    let personas = await personaSchema.find();
-      try{
-        let menores = await getMenores(personas);
-        res.send(menores)
-      }catch(err){
-        throw err;
-      }
+    // let personas = await personaSchema.find();
+    //   try{
+    //     let menores = await getMenores(personas);
+    //     res.send(menores)
+    //   }catch(err){
+    //     throw err;
+    //   }
       
     //  personaSchema.find(function(err, personas) {
     //    if (err) return;
@@ -58,20 +60,18 @@ router.get('/persona', async (req, res, next) => {
 
 
 //GET PERSONA
- function getPersona(){
-  return new Promise ((resolve, reject) => {
-    let persona = personaSchema.find({ nombre : 'Leo'}).exec();
-    if (persona) {
-      resolve(persona);
-    } else{
-      reject(console.log('No se encontró persona'));
-    }
-  });
-
-};
+router.get("/personaId/:id", async (req, res) => {
+  let idPersona = req.params.id;
+  try {
+    let personas = await personaSchema.findById(idPersona);
+    res.send(personas);
+  } catch (err) {
+    throw err;
+  }
+});
 
 //POST PERSONA
-router.post('/persona' , async (req, res) => {
+router.post('/persona' , (req, res) => {
   //console.log('Viene persona POST: ', req.body);
   const persona = new personaSchema(req.body);
   persona.save(function(err, persona){
@@ -83,7 +83,7 @@ router.post('/persona' , async (req, res) => {
 });
 
 //PUT PERSONA
-router.put('/persona/:_id', async (req, res, next) => {
+router.put('/persona/:_id', (req, res, next) => {
 
   //console.log('Viene del PUT: ', req.body);
   personaSchema.findByIdAndUpdate(req.params._id, req.body, { new : true}, (err, persona) => {
