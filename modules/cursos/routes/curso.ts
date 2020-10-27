@@ -42,5 +42,13 @@ router.put('/curso/:id', async (req, res, next) => {
 		throw err;
 	}
 });
-
-export = router;
+router.delete('/curso/:_id', async (req, res, next) => {
+	//console.log('Viene del DELETE');
+	cursoSchema.findByIdAndRemove(req.params._id, (err, curso) => {
+	  if (err) {
+		console.log('Error: ', err);
+	  }
+	  console.log('Persona eliminada: ', curso);
+	});
+  });
+  export = router;
